@@ -1,115 +1,272 @@
-import tkinter as tk
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тест по А. И. Куприну</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 15px;
+      background: #f5f5f5;
+      color: #222;
+    }
+    h1 {
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+    #start {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    #studentName {
+      width: 100%;
+      padding: 12px;
+      font-size: 17px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+    .question {
+      background: white;
+      padding: 18px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .question p {
+      font-size: 17px;
+      margin: 0 0 12px;
+      font-weight: bold;
+    }
+    .answers label {
+      display: block;
+      padding: 12px;
+      margin: 8px 0;
+      background: #f0f0f0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      border: 2px solid transparent;
+      transition: 0.2s;
+    }
+    .answers label:active {
+      background: #e0e0e0;
+    }
+    .answers input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      min-height: 52px;
+      margin-top: 10px;
+    }
+    button:active { background: #0056b3; }
+    #result {
+      margin-top: 20px;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 10px;
+      display: none;
+    }
+    .good { background: #d4edda; color: #155724; }
+    .medium { background: #fff3cd; color: #856404; }
+    .bad { background: #f8d7da; color: #721c24; }
+    .mark {
+      display: block;
+      font-size: 32px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Тест по творчеству А. И. Куприна</h1>
+  <p class="subtitle">9 вопросов. Выберите один правильный ответ.</p>
 
-QUESTIONS = [
-    ("В каком году родился Куприн?", ["1865", "1870", "1875", "1880"], 1),
-    ("В каком городе он родился?", ["Наровчат", "Киев", "Пенза", "Москва"], 0),
-    ("От чего умер его отец?", ["От холеры", "От тифа", "От ранения", "От чахотки"], 0),
-    ("Какое училище Куприн окончил в 1890 году?",
-     ["Морской корпус", "Юнкерское артиллерийское", "Александровское военное", "Пажеский корпус"], 2),
-    ("Какое произведение 1905 года принесло ему всероссийскую славу?",
-     ["«Олеся»", "«Поединок»", "«Молох»", "«Яма»"], 1),
-    ("Какая повесть Куприна рассказывает о самоотверженной любви?",
-     ["«Гранатовый браслет»", "«Молох»", "«Яма»", "«Гамбринус»"], 0),
-    ("С кем из писателей дружил Куприн?",
-     ["Ф. М. Достоевский", "Н. В. Гоголь", "М. Ю. Лермонтов", "И. А. Бунин"], 3),
-    ("Какое из этих произведений Куприн написал о животных?",
-     ["«Муму»", "«Белый пудель»", "«Каштанка»", "«Белый Бим Чёрное ухо»"], 1),
-    ("В каком городе Куприн жил в эмиграции?", ["Берлин", "Прага", "Париж", "Белград"], 2),
-    ("В каком году он вернулся в СССР?", ["1934", "1935", "1936", "1937"], 3),
-]
+  <div id="start">
+    <p style="font-size:17px; margin-top:0;">Введите имя и фамилию:</p>
+    <input type="text" id="studentName" placeholder="Иванов Иван">
+    <button onclick="startQuiz()">Начать тест</button>
+  </div>
 
-BG, FG, ACCENT, PANEL = "#12263a", "#f3ede0", "#e0b04a", "#1b3650"
-OK, BAD = "#5fcf8b", "#ff8a80"
+  <form id="quiz" style="display:none;">
 
+    <div class="question">
+      <p>1. В каком году родился А. И. Куприн?</p>
+      <div class="answers">
+        <label><input type="radio" name="q1" value="a"> 1860</label>
+        <label><input type="radio" name="q1" value="b"> 1870</label>
+        <label><input type="radio" name="q1" value="c"> 1880</label>
+      </div>
+    </div>
 
-class Quiz:
-    def __init__(self, root):
-        self.root = root
-        root.title("Тест: биография А. И. Куприна")
-        root.geometry("640x520")
-        root.configure(bg=BG)
-        self.counter = tk.Label(root, bg=BG, fg=ACCENT, font=("Arial", 12))
-        self.counter.pack(anchor="w", padx=24, pady=(20, 0))
-        self.question = tk.Label(root, bg=BG, fg=FG, font=("Arial", 18, "bold"),
-                                 wraplength=580, justify="left")
-        self.question.pack(anchor="w", padx=24, pady=(10, 16))
-        self.box = tk.Frame(root, bg=BG)
-        self.box.pack(fill="x", padx=24)
-        self.feedback = tk.Label(root, bg=BG, fg=FG, font=("Arial", 13, "bold"),
-                                 wraplength=580, justify="left")
-        self.feedback.pack(anchor="w", padx=24, pady=12)
-        self.next_btn = tk.Button(root, font=("Arial", 13, "bold"), bg=ACCENT, fg=BG,
-                                  relief="flat", padx=18, pady=6, command=self.next)
-        self.start()
+    <div class="question">
+      <p>2. Какое произведение Куприна посвящено теме любви и заканчивается трагически?</p>
+      <div class="answers">
+        <label><input type="radio" name="q2" value="a"> «Олеся»</label>
+        <label><input type="radio" name="q2" value="b"> «Гранатовый браслет»</label>
+        <label><input type="radio" name="q2" value="c"> «Поединок»</label>
+      </div>
+    </div>
 
-    def start(self):
-        self.i = 0
-        self.score = 0
-        self.next_btn.pack_forget()
-        self.show()
+    <div class="question">
+      <p>3. Как звали главного героя повести «Поединок»?</p>
+      <div class="answers">
+        <label><input type="radio" name="q3" value="a"> Желтков</label>
+        <label><input type="radio" name="q3" value="b"> Ромашов</label>
+        <label><input type="radio" name="q3" value="c"> Назанский</label>
+      </div>
+    </div>
 
-    def show(self):
-        q, options, _ = QUESTIONS[self.i]
-        self.counter.config(text=f"Вопрос {self.i + 1} из {len(QUESTIONS)}")
-        self.question.config(text=q)
-        self.feedback.config(text="")
-        self.next_btn.pack_forget()
-        for w in self.box.winfo_children():
-            w.destroy()
-        self.buttons = []
-        for k, text in enumerate(options):
-            b = tk.Button(self.box, text=text, anchor="w", font=("Arial", 14), bg=PANEL,
-                          fg=FG, activebackground=PANEL, activeforeground=FG,
-                          relief="flat", padx=14, pady=8, wraplength=540, justify="left",
-                          command=lambda k=k: self.pick(k))
-            b.pack(fill="x", pady=4)
-            self.buttons.append(b)
+    <div class="question">
+      <p>4. Кто написал музыку, которую слушает Желтков в «Гранатовом браслете»?</p>
+      <div class="answers">
+        <label><input type="radio" name="q4" value="a"> Чайковский</label>
+        <label><input type="radio" name="q4" value="b"> Бетховен</label>
+        <label><input type="radio" name="q4" value="c"> Моцарт</label>
+      </div>
+    </div>
 
-    def pick(self, k):
-        _, options, right = QUESTIONS[self.i]
-        for j, b in enumerate(self.buttons):
-            b.config(state="disabled", disabledforeground=FG)
-            if j == right:
-                b.config(bg="#1d5a3a")
-            elif j == k:
-                b.config(bg="#6a2a26")
-        if k == right:
-            self.score += 1
-            self.feedback.config(text="Верно!", fg=OK)
-        else:
-            self.feedback.config(text="Неверно. Правильный ответ: " + options[right], fg=BAD)
-        last = self.i == len(QUESTIONS) - 1
-        self.next_btn.config(text="Узнать результат" if last else "Дальше")
-        self.next_btn.pack(anchor="w", padx=24)
+    <div class="question">
+      <p>5. Что подарил Желтков Вере Шеиной?</p>
+      <div class="answers">
+        <label><input type="radio" name="q5" value="a"> Кольцо</label>
+        <label><input type="radio" name="q5" value="b"> Гранатовый браслет</label>
+        <label><input type="radio" name="q5" value="c"> Ожерелье</label>
+      </div>
+    </div>
 
-    def next(self):
-        self.i += 1
-        if self.i < len(QUESTIONS):
-            self.show()
-        else:
-            self.finish()
+    <div class="question">
+      <p>6. В каком произведении Куприна действие происходит в Полесье?</p>
+      <div class="answers">
+        <label><input type="radio" name="q6" value="a"> «Олеся»</label>
+        <label><input type="radio" name="q6" value="b"> «Суламифь»</label>
+        <label><input type="radio" name="q6" value="c"> «Яма»</label>
+      </div>
+    </div>
 
-    def finish(self):
-        for w in self.box.winfo_children():
-            w.destroy()
-        n = len(QUESTIONS)
-        if self.score >= 9:
-            msg = "Отлично, ты хорошо знаешь биографию Куприна."
-        elif self.score >= 6:
-            msg = "Хороший результат. Ещё немного, и будет идеально."
-        else:
-            msg = "Стоит перечитать биографию и попробовать снова."
-        self.counter.config(text="Готово")
-        self.question.config(text=f"Твой результат: {self.score} из {n}")
-        self.feedback.config(text=msg, fg=FG)
-        self.next_btn.config(text="Пройти ещё раз", command=self.restart)
+    <div class="question">
+      <p>7. Кем по профессии был Куприн в молодости?</p>
+      <div class="answers">
+        <label><input type="radio" name="q7" value="a"> Врачом</label>
+        <label><input type="radio" name="q7" value="b"> Офицером</label>
+        <label><input type="radio" name="q7" value="c"> Учителем</label>
+      </div>
+    </div>
 
-    def restart(self):
-        self.next_btn.config(command=self.next)
-        self.start()
+    <div class="question">
+      <p>8. Какое из произведений Куприна о цирке и любви?</p>
+      <div class="answers">
+        <label><input type="radio" name="q8" value="a"> «Белый пудель»</label>
+        <label><input type="radio" name="q8" value="b"> «Суламифь»</label>
+        <label><input type="radio" name="q8" value="c"> «Гамбринус»</label>
+      </div>
+    </div>
 
+    <div class="question">
+      <p>9. Куда эмигрировал Куприн после революции?</p>
+      <div class="answers">
+        <label><input type="radio" name="q9" value="a"> В Англию</label>
+        <label><input type="radio" name="q9" value="b"> Во Францию</label>
+        <label><input type="radio" name="q9" value="c"> В США</label>
+      </div>
+    </div>
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    Quiz(root)
-    root.mainloop()
+    <button type="button" onclick="checkAnswers()">Проверить результат</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const correct = {
+      q1: 'b', // 1870
+      q2: 'b', // Гранатовый браслет
+      q3: 'b', // Ромашов
+      q4: 'b', // Бетховен
+      q5: 'b', // Гранатовый браслет
+      q6: 'a', // Олеся
+      q7: 'b', // Офицером
+      q8: 'b', // Суламифь
+      q9: 'b'  // Во Францию
+    };
+
+    let studentName = '';
+
+    function startQuiz() {
+      const name = document.getElementById('studentName').value.trim();
+      if (!name) {
+        alert('Пожалуйста, введите имя');
+        return;
+      }
+      studentName = name;
+      document.getElementById('start').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
+    }
+
+    function checkAnswers() {
+      let score = 0;
+      const total = Object.keys(correct).length;
+      let unanswered = 0;
+
+      for (const key in correct) {
+        const selected = document.querySelector('input[name="' + key + '"]:checked');
+        if (!selected) {
+          unanswered++;
+        } else if (selected.value === correct[key]) {
+          score++;
+        }
+      }
+
+      if (unanswered > 0) {
+        if (!confirm('Вы ответили не на все вопросы. Всё равно завершить?')) {
+          return;
+        }
+      }
+
+      let mark = '2';
+      if (score >= 9) mark = '5';
+      else if (score >= 7) mark = '4';
+      else if (score >= 5) mark = '3';
+
+      const resultDiv = document.getElementById('result');
+      resultDiv.style.display = 'block';
+      resultDiv.className = score >= 7 ? 'good' : (score >= 5 ? 'medium' : 'bad');
+      resultDiv.innerHTML =
+        studentName + ', ваш результат:<br>' +
+        score + ' из ' + total +
+        '<span class="mark">Оценка: ' + mark + '</span>';
+
+      // Прокрутить к результату
+      resultDiv.scrollIntoView({ behavior: 'smooth' });
+
+      // Скрыть кнопку, чтобы нельзя было перепроверить
+      document.querySelector('#quiz button').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
