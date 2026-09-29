@@ -3,12 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тест: биография А. И. Куприна</title>
+<title>Тест по биографии Куприна — 11 класс</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-        background: linear-gradient(135deg, #0d1b2a 0%, #12263a 50%, #1b3650 100%);
+        background: #0d1b2a;
+        background-image:
+            radial-gradient(circle at 20% 20%, rgba(224, 176, 74, 0.08) 0%, transparent 40%),
+            radial-gradient(circle at 80% 80%, rgba(95, 207, 139, 0.06) 0%, transparent 40%),
+            linear-gradient(135deg, #0d1b2a 0%, #12263a 50%, #1b3650 100%);
         color: #f3ede0;
         font-family: 'Segoe UI', Arial, sans-serif;
         min-height: 100vh;
@@ -21,12 +25,12 @@
     .container {
         width: 100%;
         max-width: 640px;
-        background: rgba(27, 54, 80, 0.6);
-        border: 1px solid rgba(224, 176, 74, 0.2);
+        background: rgba(27, 54, 80, 0.65);
+        border: 1px solid rgba(224, 176, 74, 0.25);
         border-radius: 20px;
         padding: 28px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(12px);
         animation: fadeIn 0.5s ease-out;
     }
 
@@ -35,11 +39,55 @@
         to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ─── Шапка с портретом ─── */
+    .hero {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 22px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(224, 176, 74, 0.2);
+    }
+
+    .portrait-wrap {
+        flex-shrink: 0;
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        padding: 3px;
+        background: linear-gradient(135deg, #e0b04a, #f0c060, #e0b04a);
+        box-shadow: 0 0 24px rgba(224, 176, 74, 0.4);
+    }
+
+    .portrait {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        background: #1b3650;
+    }
+
+    .hero-text h1 {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #f3ede0;
+        margin-bottom: 4px;
+    }
+
+    .hero-text p {
+        font-size: 13px;
+        color: rgba(243, 237, 224, 0.55);
+        letter-spacing: 0.5px;
+    }
+
+    /* ─── Прогресс ─── */
     .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
         font-size: 13px;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -64,7 +112,11 @@
         box-shadow: 0 0 10px rgba(224, 176, 74, 0.6);
     }
 
+    /* ─── Вопрос ─── */
     #question {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
         font-size: 22px;
         font-weight: 700;
         line-height: 1.35;
@@ -73,11 +125,19 @@
         animation: slideIn 0.35s ease-out;
     }
 
+    .q-icon {
+        flex-shrink: 0;
+        font-size: 26px;
+        line-height: 1.2;
+        filter: drop-shadow(0 0 8px rgba(224, 176, 74, 0.4));
+    }
+
     @keyframes slideIn {
         from { opacity: 0; transform: translateX(-15px); }
         to   { opacity: 1; transform: translateX(0); }
     }
 
+    /* ─── Варианты ─── */
     .option {
         display: flex;
         align-items: center;
@@ -108,7 +168,7 @@
 
     .option:not(:disabled):hover {
         background: rgba(35, 74, 107, 1);
-        border-color: rgba(224, 176, 74, 0.4);
+        border-color: rgba(224, 176, 74, 0.5);
         transform: translateX(4px);
     }
 
@@ -117,7 +177,7 @@
     .option.correct {
         background: linear-gradient(135deg, #1d5a3a, #2a7a4f);
         border-color: #5fcf8b;
-        box-shadow: 0 0 20px rgba(95, 207, 139, 0.3);
+        box-shadow: 0 0 20px rgba(95, 207, 139, 0.35);
     }
 
     .option.wrong {
@@ -152,6 +212,7 @@
 
     .option-text { flex: 1; }
 
+    /* ─── Обратная связь ─── */
     #feedback {
         font-weight: 600;
         font-size: 15px;
@@ -161,6 +222,7 @@
         animation: fadeIn 0.3s ease-out;
     }
 
+    /* ─── Кнопка ─── */
     .actions {
         display: flex;
         justify-content: center;
@@ -178,21 +240,34 @@
         font-weight: 700;
         cursor: pointer;
         transition: all 0.2s ease;
-        box-shadow: 0 8px 24px rgba(224, 176, 74, 0.35);
+        box-shadow: 0 8px 24px rgba(224, 176, 74, 0.4);
         letter-spacing: 0.5px;
     }
 
     #nextBtn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 32px rgba(224, 176, 74, 0.5);
+        box-shadow: 0 12px 32px rgba(224, 176, 74, 0.55);
     }
 
     #nextBtn:active { transform: translateY(0); }
 
+    /* ─── Результат ─── */
     .result {
         text-align: center;
         padding: 20px 0;
         animation: fadeIn 0.5s ease-out;
+    }
+
+    .result-emoji {
+        font-size: 60px;
+        margin-bottom: 8px;
+        animation: pop 0.6s ease-out;
+    }
+
+    @keyframes pop {
+        0%   { transform: scale(0); }
+        60%  { transform: scale(1.2); }
+        100% { transform: scale(1); }
     }
 
     .result-score {
@@ -206,7 +281,7 @@
         margin: 16px 0;
     }
 
-    .result-total { font-size: 24px; color: rgba(243, 237, 224, 0.5); }
+    .result-total { font-size: 24px; }
 
     .result-msg {
         font-size: 17px;
@@ -214,10 +289,47 @@
         color: #f3ede0;
         line-height: 1.5;
     }
+
+    /* ─── Цитата внизу ─── */
+    .quote {
+        margin-top: 26px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(224, 176, 74, 0.15);
+        font-style: italic;
+        font-size: 13px;
+        color: rgba(243, 237, 224, 0.5);
+        text-align: center;
+        line-height: 1.5;
+    }
+
+    .quote-author {
+        display: block;
+        margin-top: 6px;
+        font-style: normal;
+        color: rgba(224, 176, 74, 0.7);
+        font-size: 12px;
+        letter-spacing: 1px;
+    }
 </style>
 </head>
 <body>
 <div class="container">
+
+    <!-- Шапка с портретом -->
+    <div class="hero">
+        <div class="portrait-wrap">
+            <img class="portrait"
+                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Kuprin_1902.jpg/512px-Kuprin_1902.jpg"
+                 alt="А. И. Куприн"
+                 onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg,#e0b04a,#f0c060)'; this.parentElement.innerHTML='<div style=\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#12263a;font-weight:700;border-radius:50%\'>АК</div>'">
+        </div>
+        <div class="hero-text">
+            <h1>Тест по биографии А. И. Куприна</h1>
+            <p>11 класс · русская литература XX века</p>
+        </div>
+    </div>
+
+    <!-- Прогресс -->
     <div class="header">
         <span id="counter">Вопрос 1 из 10</span>
         <span id="percent">0%</span>
@@ -226,31 +338,44 @@
         <div class="progress-fill" id="progress"></div>
     </div>
 
+    <!-- Вопрос -->
     <div id="question"></div>
+
+    <!-- Варианты -->
     <div id="options"></div>
+
+    <!-- Обратная связь -->
     <div id="feedback"></div>
+
+    <!-- Кнопка -->
     <div class="actions">
         <button id="nextBtn">Дальше</button>
+    </div>
+
+    <!-- Цитата -->
+    <div class="quote">
+        «Я всю жизнь любил одно — людей и книги о людях»
+        <span class="quote-author">— А. И. Куприн</span>
     </div>
 </div>
 
 <script>
     const QUESTIONS = [
-        ["В каком году родился Куприн?", ["1865", "1870", "1875", "1880"], 1],
-        ["В каком городе он родился?", ["Наровчат", "Киев", "Пенза", "Москва"], 0],
-        ["От чего умер его отец?", ["От холеры", "От тифа", "От ранения", "От чахотки"], 0],
+        ["В каком году родился Куприн?", ["1865", "1870", "1875", "1880"], 1, "📅"],
+        ["В каком городе он родился?", ["Наровчат", "Киев", "Пенза", "Москва"], 0, "🏙️"],
+        ["От чего умер его отец?", ["От холеры", "От тифа", "От ранения", "От чахотки"], 0, "🕯️"],
         ["Какое училище Куприн окончил в 1890 году?",
-            ["Морской корпус", "Юнкерское артиллерийское", "Александровское военное", "Пажеский корпус"], 2],
+            ["Морской корпус", "Юнкерское артиллерийское", "Александровское военное", "Пажеский корпус"], 2, "🎓"],
         ["Какое произведение 1905 года принесло ему всероссийскую славу?",
-            ["«Олеся»", "«Поединок»", "«Молох»", "«Яма»"], 1],
+            ["«Олеся»", "«Поединок»", "«Молох»", "«Яма»"], 1, "🏆"],
         ["Какая повесть Куприна рассказывает о самоотверженной любви?",
-            ["«Гранатовый браслет»", "«Молох»", "«Яма»", "«Гамбринус»"], 0],
+            ["«Гранатовый браслет»", "«Молох»", "«Яма»", "«Гамбринус»"], 0, "💍"],
         ["С кем из писателей дружил Куприн?",
-            ["Ф. М. Достоевский", "Н. В. Гоголь", "М. Ю. Лермонтов", "И. А. Бунин"], 3],
+            ["Ф. М. Достоевский", "Н. В. Гоголь", "М. Ю. Лермонтов", "И. А. Бунин"], 3, "🤝"],
         ["Какое из этих произведений Куприн написал о животных?",
-            ["«Муму»", "«Белый пудель»", "«Каштанка»", "«Белый Бим Чёрное ухо»"], 1],
-        ["В каком городе Куприн жил в эмиграции?", ["Берлин", "Прага", "Париж", "Белград"], 2],
-        ["В каком году он вернулся в СССР?", ["1934", "1935", "1936", "1937"], 3],
+            ["«Муму»", "«Белый пудель»", "«Каштанка»", "«Белый Бим Чёрное ухо»"], 1, "🐕"],
+        ["В каком городе Куприн жил в эмиграции?", ["Берлин", "Прага", "Париж", "Белград"], 2, "✈️"],
+        ["В каком году он вернулся в СССР?", ["1934", "1935", "1936", "1937"], 3, "🏠"],
     ];
 
     const LETTERS = ["A", "B", "C", "D"];
@@ -268,12 +393,12 @@
     const nextBtn = document.getElementById("nextBtn");
 
     function showQuestion() {
-        const [q, options] = QUESTIONS[i];
+        const [q, options, _, icon] = QUESTIONS[i];
         counterEl.textContent = `Вопрос ${i + 1} из ${TOTAL}`;
         const pct = Math.round((i / TOTAL) * 100);
         percentEl.textContent = pct + "%";
         progressEl.style.width = pct + "%";
-        questionEl.textContent = q;
+        questionEl.innerHTML = `<span class="q-icon">${icon}</span><span>${q}</span>`;
         feedbackEl.textContent = "";
         nextBtn.style.display = "none";
         optionsEl.innerHTML = "";
@@ -329,15 +454,16 @@
         counterEl.textContent = "Результат";
 
         let msg, emoji;
-        if (score >= 9) { msg = "Отлично, ты хорошо знаешь биографию Куприна."; emoji = "🏆"; }
-        else if (score >= 6) { msg = "Хороший результат. Ещё немного, и будет идеально."; emoji = "👍"; }
-        else { msg = "Стоит перечитать биографию и попробовать снова."; emoji = "📖"; }
+        if (score >= 9)      { msg = "Блестяще! Ты настоящий знаток Куприна."; emoji = "🏆"; }
+        else if (score >= 6) { msg = "Хороший результат. Ещё чуть-чуть до идеала."; emoji = "🌟"; }
+        else if (score >= 3) { msg = "Неплохо, но биографию стоит освежить."; emoji = "📖"; }
+        else                 { msg = "Перечитай биографию и попробуй снова."; emoji = "💪"; }
 
         questionEl.style.display = "none";
         optionsEl.innerHTML = "";
         feedbackEl.innerHTML = `
             <div class="result">
-                <div style="font-size: 48px">${emoji}</div>
+                <div class="result-emoji">${emoji}</div>
                 <div class="result-score">${score}<span class="result-total"> / ${TOTAL}</span></div>
                 <div class="result-msg">${msg}</div>
             </div>
@@ -351,7 +477,7 @@
     function restart() {
         i = 0;
         score = 0;
-        questionEl.style.display = "block";
+        questionEl.style.display = "flex";
         nextBtn.onclick = () => {
             i++;
             if (i < TOTAL) showQuestion();
