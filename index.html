@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест</title>
+  <style>
+    body { font-family: Arial; max-width: 600px; margin: 40px auto; padding: 20px; }
+    .question { margin-bottom: 20px; }
+    .answers label { display: block; margin: 8px 0; cursor: pointer; }
+    button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    #result { margin-top: 20px; font-size: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Тест по географии</h1>
+  <form id="quiz">
+    <div class="question">
+      <p>1. Столица Франции?</p>
+      <div class="answers">
+        <label><input type="radio" name="q1" value="a"> Лондон</label>
+        <label><input type="radio" name="q1" value="b"> Париж</label>
+        <label><input type="radio" name="q1" value="c"> Берлин</label>
+      </div>
+    </div>
+    <div class="question">
+      <p>2. Самая длинная река в мире?</p>
+      <div class="answers">
+        <label><input type="radio" name="q2" value="a"> Амазонка</label>
+        <label><input type="radio" name="q2" value="b"> Нил</label>
+        <label><input type="radio" name="q2" value="c"> Янцзы</label>
+      </div>
+    </div>
+    <button type="button" onclick="checkAnswers()">Проверить</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    const correct = { q1: 'b', q2: 'a' };
+
+    function checkAnswers() {
+      let score = 0;
+      const total = Object.keys(correct).length;
+
+      for (const key in correct) {
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        if (selected && selected.value === correct[key]) score++;
+      }
+
+      document.getElementById('result').textContent =
+        `Результат: ${score} из ${total}`;
+    }
+  </script>
+</body>
+</html>
