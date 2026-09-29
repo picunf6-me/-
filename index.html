@@ -1,272 +1,187 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Тест по А. И. Куприну</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 15px;
-      background: #f5f5f5;
-      color: #222;
-    }
-    h1 {
-      font-size: 22px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 25px;
-      font-size: 15px;
-    }
-    #start {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    #studentName {
-      width: 100%;
-      padding: 12px;
-      font-size: 17px;
-      border: 2px solid #ccc;
-      border-radius: 6px;
-      margin: 15px 0;
-    }
-    .question {
-      background: white;
-      padding: 18px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    .question p {
-      font-size: 17px;
-      margin: 0 0 12px;
-      font-weight: bold;
-    }
-    .answers label {
-      display: block;
-      padding: 12px;
-      margin: 8px 0;
-      background: #f0f0f0;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      border: 2px solid transparent;
-      transition: 0.2s;
-    }
-    .answers label:active {
-      background: #e0e0e0;
-    }
-    .answers input[type="radio"] {
-      width: 20px;
-      height: 20px;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-    button {
-      width: 100%;
-      padding: 16px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      min-height: 52px;
-      margin-top: 10px;
-    }
-    button:active { background: #0056b3; }
-    #result {
-      margin-top: 20px;
-      padding: 20px;
-      font-size: 20px;
-      font-weight: bold;
-      text-align: center;
-      border-radius: 10px;
-      display: none;
-    }
-    .good { background: #d4edda; color: #155724; }
-    .medium { background: #fff3cd; color: #856404; }
-    .bad { background: #f8d7da; color: #721c24; }
-    .mark {
-      display: block;
-      font-size: 32px;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Тест: биография А. И. Куприна</title>
+    <style>
+        body {
+            background: #12263a;
+            color: #f3ede0;
+            font-family: Arial, sans-serif;
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        #counter {
+            color: #e0b04a;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        #question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: #1b3650;
+            color: #f3ede0;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background: #234a6b;
+        }
+        .option.correct {
+            background: #1d5a3a;
+        }
+        .option.wrong {
+            background: #6a2a26;
+        }
+        .option:disabled {
+            cursor: default;
+        }
+        #feedback {
+            font-weight: bold;
+            margin: 16px 0;
+            min-height: 24px;
+        }
+        #nextBtn {
+            display: none;
+            background: #e0b04a;
+            color: #12263a;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #nextBtn:hover {
+            background: #f0c060;
+        }
+    </style>
 </head>
 <body>
-  <h1>Тест по творчеству А. И. Куприна</h1>
-  <p class="subtitle">9 вопросов. Выберите один правильный ответ.</p>
+    <div id="counter"></div>
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <button id="nextBtn">Дальше</button>
 
-  <div id="start">
-    <p style="font-size:17px; margin-top:0;">Введите имя и фамилию:</p>
-    <input type="text" id="studentName" placeholder="Иванов Иван">
-    <button onclick="startQuiz()">Начать тест</button>
-  </div>
+    <script>
+        const QUESTIONS = [
+            ["В каком году родился Куприн?", ["1865", "1870", "1875", "1880"], 1],
+            ["В каком городе он родился?", ["Наровчат", "Киев", "Пенза", "Москва"], 0],
+            ["От чего умер его отец?", ["От холеры", "От тифа", "От ранения", "От чахотки"], 0],
+            ["Какое училище Куприн окончил в 1890 году?",
+                ["Морской корпус", "Юнкерское артиллерийское", "Александровское военное", "Пажеский корпус"], 2],
+            ["Какое произведение 1905 года принесло ему всероссийскую славу?",
+                ["«Олеся»", "«Поединок»", "«Молох»", "«Яма»"], 1],
+            ["Какая повесть Куприна рассказывает о самоотверженной любви?",
+                ["«Гранатовый браслет»", "«Молох»", "«Яма»", "«Гамбринус»"], 0],
+            ["С кем из писателей дружил Куприн?",
+                ["Ф. М. Достоевский", "Н. В. Гоголь", "М. Ю. Лермонтов", "И. А. Бунин"], 3],
+            ["Какое из этих произведений Куприн написал о животных?",
+                ["«Муму»", "«Белый пудель»", "«Каштанка»", "«Белый Бим Чёрное ухо»"], 1],
+            ["В каком городе Куприн жил в эмиграции?", ["Берлин", "Прага", "Париж", "Белград"], 2],
+            ["В каком году он вернулся в СССР?", ["1934", "1935", "1936", "1937"], 3],
+        ];
 
-  <form id="quiz" style="display:none;">
+        let i = 0;
+        let score = 0;
 
-    <div class="question">
-      <p>1. В каком году родился А. И. Куприн?</p>
-      <div class="answers">
-        <label><input type="radio" name="q1" value="a"> 1860</label>
-        <label><input type="radio" name="q1" value="b"> 1870</label>
-        <label><input type="radio" name="q1" value="c"> 1880</label>
-      </div>
-    </div>
+        const counterEl = document.getElementById("counter");
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        const feedbackEl = document.getElementById("feedback");
+        const nextBtn = document.getElementById("nextBtn");
 
-    <div class="question">
-      <p>2. Какое произведение Куприна посвящено теме любви и заканчивается трагически?</p>
-      <div class="answers">
-        <label><input type="radio" name="q2" value="a"> «Олеся»</label>
-        <label><input type="radio" name="q2" value="b"> «Гранатовый браслет»</label>
-        <label><input type="radio" name="q2" value="c"> «Поединок»</label>
-      </div>
-    </div>
+        function showQuestion() {
+            const [q, options] = QUESTIONS[i];
+            counterEl.textContent = `Вопрос ${i + 1} из ${QUESTIONS.length}`;
+            questionEl.textContent = q;
+            feedbackEl.textContent = "";
+            nextBtn.style.display = "none";
+            optionsEl.innerHTML = "";
 
-    <div class="question">
-      <p>3. Как звали главного героя повести «Поединок»?</p>
-      <div class="answers">
-        <label><input type="radio" name="q3" value="a"> Желтков</label>
-        <label><input type="radio" name="q3" value="b"> Ромашов</label>
-        <label><input type="radio" name="q3" value="c"> Назанский</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>4. Кто написал музыку, которую слушает Желтков в «Гранатовом браслете»?</p>
-      <div class="answers">
-        <label><input type="radio" name="q4" value="a"> Чайковский</label>
-        <label><input type="radio" name="q4" value="b"> Бетховен</label>
-        <label><input type="radio" name="q4" value="c"> Моцарт</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>5. Что подарил Желтков Вере Шеиной?</p>
-      <div class="answers">
-        <label><input type="radio" name="q5" value="a"> Кольцо</label>
-        <label><input type="radio" name="q5" value="b"> Гранатовый браслет</label>
-        <label><input type="radio" name="q5" value="c"> Ожерелье</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>6. В каком произведении Куприна действие происходит в Полесье?</p>
-      <div class="answers">
-        <label><input type="radio" name="q6" value="a"> «Олеся»</label>
-        <label><input type="radio" name="q6" value="b"> «Суламифь»</label>
-        <label><input type="radio" name="q6" value="c"> «Яма»</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>7. Кем по профессии был Куприн в молодости?</p>
-      <div class="answers">
-        <label><input type="radio" name="q7" value="a"> Врачом</label>
-        <label><input type="radio" name="q7" value="b"> Офицером</label>
-        <label><input type="radio" name="q7" value="c"> Учителем</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>8. Какое из произведений Куприна о цирке и любви?</p>
-      <div class="answers">
-        <label><input type="radio" name="q8" value="a"> «Белый пудель»</label>
-        <label><input type="radio" name="q8" value="b"> «Суламифь»</label>
-        <label><input type="radio" name="q8" value="c"> «Гамбринус»</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>9. Куда эмигрировал Куприн после революции?</p>
-      <div class="answers">
-        <label><input type="radio" name="q9" value="a"> В Англию</label>
-        <label><input type="radio" name="q9" value="b"> Во Францию</label>
-        <label><input type="radio" name="q9" value="c"> В США</label>
-      </div>
-    </div>
-
-    <button type="button" onclick="checkAnswers()">Проверить результат</button>
-  </form>
-
-  <div id="result"></div>
-
-  <script>
-    const correct = {
-      q1: 'b', // 1870
-      q2: 'b', // Гранатовый браслет
-      q3: 'b', // Ромашов
-      q4: 'b', // Бетховен
-      q5: 'b', // Гранатовый браслет
-      q6: 'a', // Олеся
-      q7: 'b', // Офицером
-      q8: 'b', // Суламифь
-      q9: 'b'  // Во Францию
-    };
-
-    let studentName = '';
-
-    function startQuiz() {
-      const name = document.getElementById('studentName').value.trim();
-      if (!name) {
-        alert('Пожалуйста, введите имя');
-        return;
-      }
-      studentName = name;
-      document.getElementById('start').style.display = 'none';
-      document.getElementById('quiz').style.display = 'block';
-    }
-
-    function checkAnswers() {
-      let score = 0;
-      const total = Object.keys(correct).length;
-      let unanswered = 0;
-
-      for (const key in correct) {
-        const selected = document.querySelector('input[name="' + key + '"]:checked');
-        if (!selected) {
-          unanswered++;
-        } else if (selected.value === correct[key]) {
-          score++;
+            options.forEach((text, k) => {
+                const btn = document.createElement("button");
+                btn.className = "option";
+                btn.textContent = text;
+                btn.onclick = () => pick(k);
+                optionsEl.appendChild(btn);
+            });
         }
-      }
 
-      if (unanswered > 0) {
-        if (!confirm('Вы ответили не на все вопросы. Всё равно завершить?')) {
-          return;
+        function pick(k) {
+            const [_, options, right] = QUESTIONS[i];
+            const buttons = optionsEl.querySelectorAll(".option");
+
+            buttons.forEach((b, j) => {
+                b.disabled = true;
+                if (j === right) b.classList.add("correct");
+                else if (j === k) b.classList.add("wrong");
+            });
+
+            if (k === right) {
+                score++;
+                feedbackEl.textContent = "Верно!";
+                feedbackEl.style.color = "#5fcf8b";
+            } else {
+                feedbackEl.textContent = "Неверно. Правильный ответ: " + options[right];
+                feedbackEl.style.color = "#ff8a80";
+            }
+
+            const last = i === QUESTIONS.length - 1;
+            nextBtn.textContent = last ? "Узнать результат" : "Дальше";
+            nextBtn.style.display = "inline-block";
         }
-      }
 
-      let mark = '2';
-      if (score >= 9) mark = '5';
-      else if (score >= 7) mark = '4';
-      else if (score >= 5) mark = '3';
+        nextBtn.onclick = () => {
+            i++;
+            if (i < QUESTIONS.length) {
+                showQuestion();
+            } else {
+                finish();
+            }
+        };
 
-      const resultDiv = document.getElementById('result');
-      resultDiv.style.display = 'block';
-      resultDiv.className = score >= 7 ? 'good' : (score >= 5 ? 'medium' : 'bad');
-      resultDiv.innerHTML =
-        studentName + ', ваш результат:<br>' +
-        score + ' из ' + total +
-        '<span class="mark">Оценка: ' + mark + '</span>';
+        function finish() {
+            const n = QUESTIONS.length;
+            let msg;
+            if (score >= 9) msg = "Отлично, ты хорошо знаешь биографию Куприна.";
+            else if (score >= 6) msg = "Хороший результат. Ещё немного, и будет идеально.";
+            else msg = "Стоит перечитать биографию и попробовать снова.";
 
-      // Прокрутить к результату
-      resultDiv.scrollIntoView({ behavior: 'smooth' }); \
+            counterEl.textContent = "Готово";
+            questionEl.textContent = `Твой результат: ${score} из ${n}`;
+            optionsEl.innerHTML = "";
+            feedbackEl.textContent = msg;
+            feedbackEl.style.color = "#f3ede0";
+            nextBtn.textContent = "Пройти ещё раз";
+            nextBtn.style.display = "inline-block";
+            nextBtn.onclick = restart;
+        }
 
-      // Скрыть кнопку, чтобы нельзя было перепроверить
-      document.querySelector('#quiz button').style.display = 'none';
-    }
-  </script>
+        function restart() {
+            i = 0;
+            score = 0;
+            nextBtn.onclick = () => {
+                i++;
+                if (i < QUESTIONS.length) showQuestion();
+                else finish();
+            };
+            showQuestion();
+        }
+
+        showQuestion();
+    </script>
 </body>
 </html>
