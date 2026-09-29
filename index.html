@@ -1,54 +1,115 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Тест</title>
-  <style>
-    body { font-family: Arial; max-width: 600px; margin: 40px auto; padding: 20px; }
-    .question { margin-bottom: 20px; }
-    .answers label { display: block; margin: 8px 0; cursor: pointer; }
-    button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    #result { margin-top: 20px; font-size: 20px; font-weight: bold; }
-  </style>
-</head>
-<body>
-  <h1>Тест по географии</h1>
-  <form id="quiz">
-    <div class="question">
-      <p>1. Столица Франции?</p>
-      <div class="answers">
-        <label><input type="radio" name="q1" value="a"> Лондон</label>
-        <label><input type="radio" name="q1" value="b"> Париж</label>
-        <label><input type="radio" name="q1" value="c"> Берлин</label>
-      </div>
-    </div>
-    <div class="question">
-      <p>2. Самая длинная река в мире?</p>
-      <div class="answers">
-        <label><input type="radio" name="q2" value="a"> Амазонка</label>
-        <label><input type="radio" name="q2" value="b"> Нил</label>
-        <label><input type="radio" name="q2" value="c"> Янцзы</label>
-      </div>
-    </div>
-    <button type="button" onclick="checkAnswers()">Проверить</button>
-  </form>
-  <div id="result"></div>
+import tkinter as tk
 
-  <script>
-    const correct = { q1: 'b', q2: 'a' };
+QUESTIONS = [
+    ("В каком году родился Куприн?", ["1865", "1870", "1875", "1880"], 1),
+    ("В каком городе он родился?", ["Наровчат", "Киев", "Пенза", "Москва"], 0),
+    ("От чего умер его отец?", ["От холеры", "От тифа", "От ранения", "От чахотки"], 0),
+    ("Какое училище Куприн окончил в 1890 году?",
+     ["Морской корпус", "Юнкерское артиллерийское", "Александровское военное", "Пажеский корпус"], 2),
+    ("Какое произведение 1905 года принесло ему всероссийскую славу?",
+     ["«Олеся»", "«Поединок»", "«Молох»", "«Яма»"], 1),
+    ("Какая повесть Куприна рассказывает о самоотверженной любви?",
+     ["«Гранатовый браслет»", "«Молох»", "«Яма»", "«Гамбринус»"], 0),
+    ("С кем из писателей дружил Куприн?",
+     ["Ф. М. Достоевский", "Н. В. Гоголь", "М. Ю. Лермонтов", "И. А. Бунин"], 3),
+    ("Какое из этих произведений Куприн написал о животных?",
+     ["«Муму»", "«Белый пудель»", "«Каштанка»", "«Белый Бим Чёрное ухо»"], 1),
+    ("В каком городе Куприн жил в эмиграции?", ["Берлин", "Прага", "Париж", "Белград"], 2),
+    ("В каком году он вернулся в СССР?", ["1934", "1935", "1936", "1937"], 3),
+]
 
-    function checkAnswers() {
-      let score = 0;
-      const total = Object.keys(correct).length;
+BG, FG, ACCENT, PANEL = "#12263a", "#f3ede0", "#e0b04a", "#1b3650"
+OK, BAD = "#5fcf8b", "#ff8a80"
 
-      for (const key in correct) {
-        const selected = document.querySelector(`input[name="${key}"]:checked`);
-        if (selected && selected.value === correct[key]) score++;
-      }
 
-      document.getElementById('result').textContent =
-        `Результат: ${score} из ${total}`;
-    }
-  </script>
-</body>
-</html>
+class Quiz:
+    def __init__(self, root):
+        self.root = root
+        root.title("Тест: биография А. И. Куприна")
+        root.geometry("640x520")
+        root.configure(bg=BG)
+        self.counter = tk.Label(root, bg=BG, fg=ACCENT, font=("Arial", 12))
+        self.counter.pack(anchor="w", padx=24, pady=(20, 0))
+        self.question = tk.Label(root, bg=BG, fg=FG, font=("Arial", 18, "bold"),
+                                 wraplength=580, justify="left")
+        self.question.pack(anchor="w", padx=24, pady=(10, 16))
+        self.box = tk.Frame(root, bg=BG)
+        self.box.pack(fill="x", padx=24)
+        self.feedback = tk.Label(root, bg=BG, fg=FG, font=("Arial", 13, "bold"),
+                                 wraplength=580, justify="left")
+        self.feedback.pack(anchor="w", padx=24, pady=12)
+        self.next_btn = tk.Button(root, font=("Arial", 13, "bold"), bg=ACCENT, fg=BG,
+                                  relief="flat", padx=18, pady=6, command=self.next)
+        self.start()
+
+    def start(self):
+        self.i = 0
+        self.score = 0
+        self.next_btn.pack_forget()
+        self.show()
+
+    def show(self):
+        q, options, _ = QUESTIONS[self.i]
+        self.counter.config(text=f"Вопрос {self.i + 1} из {len(QUESTIONS)}")
+        self.question.config(text=q)
+        self.feedback.config(text="")
+        self.next_btn.pack_forget()
+        for w in self.box.winfo_children():
+            w.destroy()
+        self.buttons = []
+        for k, text in enumerate(options):
+            b = tk.Button(self.box, text=text, anchor="w", font=("Arial", 14), bg=PANEL,
+                          fg=FG, activebackground=PANEL, activeforeground=FG,
+                          relief="flat", padx=14, pady=8, wraplength=540, justify="left",
+                          command=lambda k=k: self.pick(k))
+            b.pack(fill="x", pady=4)
+            self.buttons.append(b)
+
+    def pick(self, k):
+        _, options, right = QUESTIONS[self.i]
+        for j, b in enumerate(self.buttons):
+            b.config(state="disabled", disabledforeground=FG)
+            if j == right:
+                b.config(bg="#1d5a3a")
+            elif j == k:
+                b.config(bg="#6a2a26")
+        if k == right:
+            self.score += 1
+            self.feedback.config(text="Верно!", fg=OK)
+        else:
+            self.feedback.config(text="Неверно. Правильный ответ: " + options[right], fg=BAD)
+        last = self.i == len(QUESTIONS) - 1
+        self.next_btn.config(text="Узнать результат" if last else "Дальше")
+        self.next_btn.pack(anchor="w", padx=24)
+
+    def next(self):
+        self.i += 1
+        if self.i < len(QUESTIONS):
+            self.show()
+        else:
+            self.finish()
+
+    def finish(self):
+        for w in self.box.winfo_children():
+            w.destroy()
+        n = len(QUESTIONS)
+        if self.score >= 9:
+            msg = "Отлично, ты хорошо знаешь биографию Куприна."
+        elif self.score >= 6:
+            msg = "Хороший результат. Ещё немного, и будет идеально."
+        else:
+            msg = "Стоит перечитать биографию и попробовать снова."
+        self.counter.config(text="Готово")
+        self.question.config(text=f"Твой результат: {self.score} из {n}")
+        self.feedback.config(text=msg, fg=FG)
+        self.next_btn.config(text="Пройти ещё раз", command=self.restart)
+
+    def restart(self):
+        self.next_btn.config(command=self.next)
+        self.start()
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    Quiz(root)
+    root.mainloop()
